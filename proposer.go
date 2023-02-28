@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"testing"
+)
 
 type Proposer struct {
 	// 服务器id
@@ -13,7 +16,7 @@ type Proposer struct {
 	acceptors []int
 }
 
-func (p *Proposer) propose(v interface{}) interface{} {
+func (p *Proposer) propose(v interface{}, t *testing.T) interface{} {
 	p.round++
 	p.number = p.proposalNumber()
 
@@ -26,8 +29,10 @@ func (p *Proposer) propose(v interface{}) interface{} {
 			From:   p.id,
 			To:     aid,
 		}
+		t.Log(args)
 		reply := new(MsgReply)
 		err := call(fmt.Sprintf("127.0.0.1:%d", aid), "Acceptor.Prepare", args, reply)
+		t.Log(reply)
 		if !err {
 			continue
 		}
@@ -47,7 +52,7 @@ func (p *Proposer) propose(v interface{}) interface{} {
 
 	// 第二阶段(phase 2)
 	acceptCount := 0
-	if prepareCount > p.majority() {
+	if prepareCount >= p.majority() {
 		for _, aid := range p.acceptors {
 			args := MsgArgs{
 				Number: p.number,
@@ -55,8 +60,10 @@ func (p *Proposer) propose(v interface{}) interface{} {
 				From:   p.id,
 				To:     aid,
 			}
+			t.Log(args)
 			reply := new(MsgReply)
 			ok := call(fmt.Sprintf("127.0.0.1:%d", aid), "Acceptor.Accept", args, reply)
+			t.Log(reply)
 			if !ok {
 				continue
 			}

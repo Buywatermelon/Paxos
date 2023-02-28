@@ -15,7 +15,7 @@ type Learner struct {
 	acceptedMsg map[int]MsgArgs
 }
 
-func (l *Learner) learn(args *MsgArgs, reply *MsgReply) error {
+func (l *Learner) Learn(args *MsgArgs, reply *MsgReply) error {
 	a := l.acceptedMsg[args.From]
 	if a.Number <= args.Number {
 		l.acceptedMsg[args.From] = *args
@@ -52,7 +52,7 @@ func (l *Learner) majority() int {
 func (l *Learner) server(id int) {
 	rpcs := rpc.NewServer()
 	rpcs.Register(l)
-	addr := fmt.Sprintf("%d", id)
+	addr := fmt.Sprintf(":%d", id)
 	lis, e := net.Listen("tcp", addr)
 	if e != nil {
 		log.Fatal("listen error", e)

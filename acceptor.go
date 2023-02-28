@@ -70,7 +70,7 @@ func newAcceptor(id int, learners []int) *Acceptor {
 func (a *Acceptor) server() {
 	rpcs := rpc.NewServer()
 	rpcs.Register(a)
-	addr := fmt.Sprintf(":%D", a.id)
+	addr := fmt.Sprintf(":%d", a.id)
 	l, e := net.Listen("tcp", addr)
 	if e != nil {
 		log.Fatal("listen error:", e)
