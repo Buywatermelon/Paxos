@@ -62,21 +62,17 @@ func TestTwoProposers(t *testing.T) {
 
 	defer cleanup(acceptors, learners)
 
-	t.Log("p1开始提议")
 	p1 := &Proposer{
 		id:        1,
 		acceptors: acceptorIds,
 	}
 	v1 := p1.propose("hello world", t)
-	t.Log("p1结束提议")
 
-	t.Log("p2开始提议")
 	p2 := &Proposer{
 		id:        2,
 		acceptors: acceptorIds,
 	}
 	v2 := p2.propose("hello book", t)
-	t.Log("p2结束提议")
 
 	if v1 != v2 {
 		t.Errorf("value1 = %s, value12 = %s", v1, v2)
